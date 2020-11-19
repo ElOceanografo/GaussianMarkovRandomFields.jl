@@ -13,27 +13,35 @@ Issues, bugfixes, and contributions welcome!
 using GaussianMarkovRandomFields
 using Turing
 using SparseArrays
+using StatsPlots
 
 function ar_precision(ρ, k)
     return spdiagm(-1 => -ρ*ones(k-1), 0 => ones(k), 1 => -ρ*ones(k-1))
 end
 
-k = 10_000
-ρ = 0.4
-μ = zeros(k)
-Q = ar_precision(ρ, k)
-d = GMRF(μ, Q)
+k = 5_000   # number of measurements in time series
+σ = 2.5     # marginal variance
+ρ = 0.4     # autocorrelation coefficient
+μ = 5.0     # mean
+
+Q = ar_precision(ρ, k) ./ σ^2
+d = GMRF(μ*ones(k), Q)
 x = rand(d)
+plot(x)
 
 @model function AR1(x)
     n = length(x)
+    σ ~ Gamma(2, 3)
     ρ ~ Uniform(0, 0.5)
-    Q = ar_precision(ρ, n)
-    x ~ GMRF(Q)
+    μ ~ Normal(0, 10)
+    Q = ar_precision(ρ, n) ./ σ^2
+    x ~ GMRF(μ*ones(k), Q)
 end
 
 mod = AR1(x)
 @time chn = sample(mod, NUTS(), 1000)
+plot(chn)
 ```
+![MCMC chains and posteriors for μ, ρ, and σ](example_chain.png)
 
-After compiling, this model runs in ~11 seconds (single-threaded) on a laptop with an Intel Core i9-9980 2.4 GHz CPU.
+After compiling, this model runs in ~16 seconds (single-threaded) on a laptop with an Intel Core i9-9980 2.4 GHz CPU.

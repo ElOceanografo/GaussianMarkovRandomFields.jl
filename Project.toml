@@ -1,0 +1,23 @@
+name = "GaussianMarkovRandomFields"
+uuid = "4d7c2439-5cab-4abb-93c6-ad03401d3d02"
+authors = ["Sam Urmy <oceanographerschoice@gmail.com>"]
+version = "0.1.0"
+
+[deps]
+Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
+LDLFactorizations = "40e66cde-538c-5869-a4ad-c39174c6795b"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
+
+[extras]
+BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
+FiniteDiff = "6a86dc24-6348-571c-b903-95158fe2bd41"
+ForwardDiff = "f6369f11-7733-5829-9624-2563aa707210"
+PDMats = "90014a1f-27ba-587c-ab20-58faa44d9150"
+ReverseDiff = "37e2e3b7-166d-5795-8a7a-e32c996b4267"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+Turing = "fce5fe82-541a-59a6-adf8-730c64b5f9a0"
+
+[targets]
+test = ["BenchmarkTools", "FiniteDiff", "ForwardDiff", "PDMats", "ReverseDiff", "Test", "Turing"]

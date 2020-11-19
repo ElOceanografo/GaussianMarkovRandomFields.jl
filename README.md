@@ -1,4 +1,4 @@
-# GaussianMarkovRandomFields
+# GaussianMarkovRandomFields.jl
 Lightweight sparse GMRF type, compatible with forward and reverse AD
 
 This work-in-progress package provides an implementation of a Gaussian Markov random field--that is, a multivariate Gaussian distribution defined by a sparse precision matrix.  GMRFs are useful for modeling variables with spatial and/or temporal autocorrelation in an efficient way, since they can be defined in terms of a sparse precision matrix, rather than a dense covariance matrix.

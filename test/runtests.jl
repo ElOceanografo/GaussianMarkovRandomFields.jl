@@ -42,7 +42,8 @@ end
     @test mean(g1) == μ
     @test prec(g1) == Q
     @test eltype(g2) == T
-    @test all(var(g1) .≈ 1 ./ diag(Q))
+    #  @test all(var(g1) .≈ 1 ./ diag(Q))
+    #  Tests for variance below
     @test_throws ErrorException cov(g1)
 end
 
@@ -152,4 +153,53 @@ end
     @test typeof(sample(m, NUTS(), 50)) <: Turing.Chains
     Turing.setadbackend(:reversediff)
     @test typeof(sample(m, NUTS(), 50)) <: Turing.Chains
+end
+
+@testset "Marginal variance" begin
+    ### Setup AR1 example
+    function ar1_precision(n::I, ρ::T) where {I<:Integer,T}
+        offdiagvec = -ρ * ones(T, n - 1)
+        diagvec = T[one(ρ); ones(T, n - 2) .+ ρ^2; one(ρ)]
+        return  spdiagm(-1 => offdiagvec, 0 => diagvec, 1 => offdiagvec)
+    end
+    function ar1_precision(n, ρ, σ)
+        ρ, σ = promote(ρ, σ)
+        return 1 / σ^2 * ar1_precision(n, ρ)
+    end
+    #  function ar1_precision(n, ρ::T, σ::AbstractVector{T}) where T
+        #  scalemat = Diagonal(σ)
+        #  return scalemat * ar1_precision(n, ρ) * scalemat
+    #  end
+
+    k, ρ, μ, Q = test_variables()
+
+    Q1 = ar1_precision(k, ρ)
+    Q2 = ar1_precision(k, ρ, 2.0)
+    # Qns = ar1_precision(k, ρ, range(0.1, 1.9, length = k))
+
+    n = 10_000   # number of measurements in time series
+    σ = 2.0      # innovation variance
+    ρ = 0.4      # autocorrelation coefficient
+
+    Qbig = ar1_precision(n, ρ, σ)
+    dbig = GMRF(Qbig)
+
+    # Compare to the analytic marginal variance for an AR(1) process and ensure
+    # that we don't overflow the stack on large precision matrices.
+    @test all(var(dbig) .≈ σ^2 / (1 - ρ^2))
+
+
+    # Test that all elements are computed accurately
+    Q_small = ar1_precision(k, ρ)
+    # Convert to generic sparse matrix
+    L_small = dropzeros(sparse(cholesky(Matrix(Q_small)).L))
+    # Invert directly to get full covariance matrix for comparison
+    Σ_small = inv(Matrix(Q_small))
+
+    Σ_elem = similar(Σ_small)
+    for j in k:-1:1, i in k:-1:1
+        Σ_elem[i, j] = GaussianMarkovRandomFields.cov_element(L_small, i, j)
+    end
+
+    @test all(Σ_elem .≈ Σ_small)
 end

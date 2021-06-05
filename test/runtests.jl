@@ -33,15 +33,22 @@ end
     Q = Q'Q + I
     μ = zeros(T, k)
     L, P = cholesky_ldl(Q)
+    F = ldl(Q)
 
     g1 = GMRF(Q)
     g2 = GMRF(μ, Q)
     g3 = GMRF(μ, Q, L)
+    g4 = GMRF(μ, F)
+    g5 = GMRF(F)
     @test g1 == g2
     @test g1 == g3
     @test mean(g1) == μ
     @test prec(g1) == Q
     @test eltype(g2) == T
+    for gf in [g4, g5]
+        @test all(mean(gf) .≈ mean(g1))
+        @test all(prec(gf) .≈ prec(g1))
+    end
     #  @test all(var(g1) .≈ 1 ./ diag(Q))
     #  Tests for variance below
     @test_throws ErrorException cov(g1)

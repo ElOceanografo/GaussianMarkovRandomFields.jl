@@ -1,6 +1,7 @@
 module GaussianMarkovRandomFields
 
 using LDLFactorizations
+import LDLFactorizations: LDLFactorization
 using LinearAlgebra, SparseArrays
 using Distributions
 using Random
@@ -49,6 +50,14 @@ function GMRF(Q::AbstractMatrix{T}) where T
     n = LinearAlgebra.checksquare(Q)
     return GMRF(zeros(T, n), Q)
 end
+
+function GMRF(μ::AbstractVector, F::LDLFactorization)
+	P = F.P
+	L = cholesky(F)
+	Q = (L * L')[invperm(P), invperm(P)]
+    return GMRF(μ, Q, F.L)
+end
+GMRF(F::LDLFactorization) = GMRF(zeros(size(F.L, 1)), F)
 
 function Distributions._logpdf(d::GMRF, x::AbstractVector{T}) where T
     k = length(d.μ)

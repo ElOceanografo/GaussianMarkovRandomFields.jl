@@ -3,7 +3,7 @@ Lightweight sparse GMRF type, compatible with forward and reverse AD
 
 This work-in-progress package provides an implementation of a Gaussian Markov random field--that is, a multivariate Gaussian distribution defined by a sparse precision matrix.  GMRFs are useful for modeling variables with spatial and/or temporal autocorrelation in an efficient way, since they can be defined in terms of a sparse precision matrix, rather than a dense covariance matrix.
 
-The `GMRF` type defined here is a `Distributions.ContinuousMultivariateDistribution`.  It is basically equivalent to an `MvNormalCanon` distribution from Distributions.jl, with the difference that it uses the pure-Julia LDLFactorizations.jl instead of CHOLMOD under the hood, so it works with ForwardDiff and ReverseDiff (though not Zygote at the moment).  It's performance is on par with the As the AD and Distributions ecosystems develop further this package may become irrelevant, but at the moment it's the only out-of-the-box way to include a GMRF in a Turing model (that I know of, anyway).
+The `GMRF` type defined here is a subtype of `Distributions.AbstractMvNormal`.  It is basically equivalent to an `MvNormalCanon` distribution from Distributions.jl, with the difference that it uses the pure-Julia LDLFactorizations.jl instead of CHOLMOD under the hood, so it works with ForwardDiff and ReverseDiff (though not Zygote at the moment).  It's performance is on par with the `MvNormalCanon` from Distributions. As the AD and Distributions ecosystems develop further this package may become irrelevant, but at the moment it's the only out-of-the-box way to include a GMRF in a Turing model (that I know of, anyway).
 
 Issues, bugfixes, and contributions welcome!
 
@@ -15,6 +15,7 @@ using Turing
 using SparseArrays
 using StatsPlots
 
+'''Create an AR-1 precision matrix, given an autocorrelation coefficient `ρ` and series length `k`.'''
 function ar_precision(ρ, k)
     return spdiagm(-1 => -ρ*ones(k-1), 0 => ones(k), 1 => -ρ*ones(k-1))
 end

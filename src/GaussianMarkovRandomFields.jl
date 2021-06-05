@@ -32,7 +32,7 @@ end
 
 struct GMRF{Tv<:AbstractVector{<:Real},
         Tm<:AbstractMatrix{<:Real},
-        Tl<:AbstractMatrix{<:Real}} <: ContinuousMultivariateDistribution
+        Tl<:AbstractMatrix{<:Real}} <: AbstractMvNormal
     μ::Tv
     Q::Tm
     L::Tl

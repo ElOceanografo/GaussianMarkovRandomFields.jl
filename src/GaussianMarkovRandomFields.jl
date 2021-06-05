@@ -41,7 +41,6 @@ end
 function GMRF(μ::AbstractVector, Q::AbstractMatrix)
     n = LinearAlgebra.checksquare(Q)
     length(μ) == n || DimensionMismatch("The dimensions of μ and Q are inconsistent.")
-    fac = ldl(Q)
     L, P = cholesky_ldl(Q)
     return GMRF(μ, Q, L)
 end

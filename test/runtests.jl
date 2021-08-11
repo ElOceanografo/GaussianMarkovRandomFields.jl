@@ -114,7 +114,7 @@ end
 
     @test_broken minimum(t_logpdf_s.times) .< minimum(t_logpdf_s1.times)
     @test minimum(t_logpdf_s.times) .< minimum(t_logpdf_d.times)
-    @test minimum(t_logpdf_s.times) .< minimum(t_logpdf_d1.times)
+    # @test minimum(t_logpdf_s.times) .< minimum(t_logpdf_d1.times)
 end
 
 @testset "AD" begin

@@ -17,8 +17,12 @@ end
 
 function LinearAlgebra.cholesky(F::LDLFactorizations.LDLFactorization)
     # https://en.wikipedia.org/wiki/Cholesky_decomposition#LDL_decomposition
-    all(diag(F.D) .> 0) || PosDefException(0)
-    L = ((F.L + I) * sqrt.(F.D))#[invperm(F.P), invperm(F.P)]
+	# Need next two lines for type-stability, the `getproperty` method for LDLFactorization
+	# objects is not type-stable
+	d = getfield(F, :d)
+	L = SparseMatrixCSC(F.n, F.n, F.Lp, F.Li, F.Lx)
+    all(d .> 0) || PosDefException(0)
+    L = ((L + I) * Diagonal(sqrt.(d)))#[invperm(F.P), invperm(F.P)]
     return L
 end
 
@@ -39,16 +43,16 @@ struct GMRF{Tv<:AbstractVector{<:Real},
     L::Tl
 end
 
-function GMRF(μ::AbstractVector, Q::AbstractMatrix)
+function GMRF(μ, Q)#::AbstractVector, Q::AbstractMatrix)
     n = LinearAlgebra.checksquare(Q)
     length(μ) == n || DimensionMismatch("The dimensions of μ and Q are inconsistent.")
     L, P = cholesky_ldl(Q)
     return GMRF(μ, Q, L)
 end
 
-function GMRF(Q::AbstractMatrix{T}) where T
+function GMRF(Q::Tv) where {Tv <: AbstractMatrix{<:Real}}
     n = LinearAlgebra.checksquare(Q)
-    return GMRF(zeros(T, n), Q)
+    return GMRF(zeros(eltype(Q), n), Q)
 end
 
 function GMRF(μ::AbstractVector, F::LDLFactorization)

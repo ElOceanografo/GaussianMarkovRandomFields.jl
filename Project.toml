@@ -1,7 +1,7 @@
 name = "GaussianMarkovRandomFields"
 uuid = "4d7c2439-5cab-4abb-93c6-ad03401d3d02"
 authors = ["Sam Urmy <oceanographerschoice@gmail.com>"]
-version = "0.1.1"
+version = "0.1.2"
 
 [deps]
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"

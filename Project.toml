@@ -4,6 +4,7 @@ authors = ["Sam Urmy <oceanographerschoice@gmail.com>"]
 version = "0.1.2"
 
 [deps]
+DifferentiationInterface = "a0c0ee7d-e4b9-4e03-894e-1c5f64a51d63"
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
 LDLFactorizations = "40e66cde-538c-5869-a4ad-c39174c6795b"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
@@ -12,18 +13,25 @@ Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 
 [compat]
+DifferentiationInterface = "0.6.50"
+DifferentiationInterfaceTest = "0.9.6"
 Distributions = "0.24, 0.25"
 LDLFactorizations = "0.8, 0.9, 0.10"
 Memoize = "0.4"
+Mooncake = "0.4.113"
+Zygote = "0.7.6"
 
 [extras]
 BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
+DifferentiationInterfaceTest = "a82114a7-5aa3-49a8-9643-716bb13727a3"
 FiniteDiff = "6a86dc24-6348-571c-b903-95158fe2bd41"
 ForwardDiff = "f6369f11-7733-5829-9624-2563aa707210"
+Mooncake = "da2b9cff-9c12-43a0-ae48-6db2b0edb7d6"
 PDMats = "90014a1f-27ba-587c-ab20-58faa44d9150"
 ReverseDiff = "37e2e3b7-166d-5795-8a7a-e32c996b4267"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 Turing = "fce5fe82-541a-59a6-adf8-730c64b5f9a0"
+Zygote = "e88e6eb3-aa80-5325-afca-941959d7151f"
 
 [targets]
-test = ["BenchmarkTools", "FiniteDiff", "ForwardDiff", "PDMats", "ReverseDiff", "Test", "Turing"]
+test = ["BenchmarkTools", "DifferentiationInterfaceTest", "FiniteDiff", "ForwardDiff", "Mooncake", "PDMats", "ReverseDiff", "Test", "Turing", "Zygote"]
